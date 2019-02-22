@@ -32,6 +32,10 @@ export interface StateUnauthorized {
 
 export type State = StateAuthorized | StateAuthorizing | StateUnauthorized | StateError;
 
+export interface StateSegment {
+  authorization: State;
+}
+
 export const initialState: StateUnauthorized = {
   status: AuthorizationStatus.Unauthorized
 };
