@@ -1,4 +1,6 @@
-import { AuthorizationActions, AuthorizationActionTypes } from './authorization.actions';
+import { Action } from '@ngrx/store';
+import { isType } from 'typescript-fsa';
+import { Login, Logout } from './authorization.actions';
 
 
 export enum AuthorizationStatus {
@@ -34,45 +36,29 @@ export const initialState: StateUnauthorized = {
   status: AuthorizationStatus.Unauthorized
 };
 
-export function reducer(state: State = initialState, action: AuthorizationActions): State {
-  switch (action.type) {
-    case AuthorizationActionTypes.Logout: {
-      return initialState;
-    }
-
-    case AuthorizationActionTypes.LoginStart: {
-      return {
-        status: AuthorizationStatus.Authorizing,
-        login: action.login
-      };
-    }
-
-    case AuthorizationActionTypes.LoginDone: {
-      if (state.status !== AuthorizationStatus.Authorizing) {
-        throw new Error('LoginDone action should be called at AuthorizationStatus.Authorizing state');
-      }
-
-      return {
-        status: AuthorizationStatus.Authorized,
-        login: state.login,
-        token: action.token
-      };
-    }
-
-    case AuthorizationActionTypes.LoginFailed: {
-      if (state.status !== AuthorizationStatus.Authorizing) {
-        throw new Error('LoginFailed action should be called at AuthorizationStatus.Authorizing state');
-      }
-
-      return {
-        status: AuthorizationStatus.Error,
-        login: state.login,
-        error: action.error
-      };
-    }
-
-    default:
-      const exhaustiveCheck: never = action;
-      return state;
+export function reducer(state: State = initialState, action: Action): State {
+  if (isType(action, Login.started)) {
+    return {
+      status: AuthorizationStatus.Authorizing,
+      login: action.payload.login
+    };
+  } else if (isType(action, Login.done)) {
+    const { payload } = action;
+    return {
+      status: AuthorizationStatus.Authorized,
+      login: payload.params.login,
+      token: payload.result.token
+    };
+  } else if (isType(action, Login.failed)) {
+    const { payload } = action;
+    return {
+      status: AuthorizationStatus.Authorized,
+      login: payload.params.login,
+      token: payload.error.message
+    };
+  } else if (isType(action, Logout)) {
+    return initialState;
+  } else {
+    return state;
   }
 }

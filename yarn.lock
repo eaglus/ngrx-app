@@ -311,6 +311,11 @@
   resolved "https://registry.yarnpkg.com/@ngrx/entity/-/entity-7.2.0.tgz#b8de8fd6fb39b87eb4187a9768e39e2862e35669"
   integrity sha512-DaHBRSVHJ0tJtJkTswZNKCxp6CuD49gTsD4C29MpLK72oR0UPBlbJGyPPS2CroEXqOX0rfq85P9lun0NL8FZWA==
 
+"@ngrx/router-store@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-7.2.0.tgz#81538a259c5befb137efa47b4c5750e508e7a7d0"
+  integrity sha512-deXDZg4FffuqxlFXqAaR8+lEy4yCJgTmKn2avKHltF3GP+8bxIRiD6GDCYjYJVhLFiBK8U3AFhgfoEuUUpFCag==
+
 "@ngrx/schematics@^7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@ngrx/schematics/-/schematics-7.2.0.tgz#2802a6f7533904967416de09c306e4149f58d1e6"
@@ -6729,6 +6734,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript-fsa@^3.0.0-beta-2:
+  version "3.0.0-beta-2"
+  resolved "https://registry.yarnpkg.com/typescript-fsa/-/typescript-fsa-3.0.0-beta-2.tgz#1cc1d0c014c025fd51cba097776033ac4b6b753c"
+  integrity sha512-qXkHih2XAtpxqd3AEVgFtCDwvBlAMl2miVy1TmS+wXgiRlVw7orf2qIh3C8faANhD34n75Ui8x5ydQ40uzuskA==
 
 typescript@3.2.4, typescript@~3.2.2:
   version "3.2.4"

@@ -1,30 +1,20 @@
-import { Action } from '@ngrx/store';
+import actionCreatorFactory from 'typescript-fsa';
 
-export enum AuthorizationActionTypes {
-  LoginStart = '[Authorization] login start',
-  LoginDone = '[Authorization] login done',
-  LoginFailed = '[Authorization] login failed',
-  Logout = '[Authorization] logout',
+const actionCreator = actionCreatorFactory('authorization');
+
+interface ILoginParams {
+  login: string;
+  password: string;
 }
 
-export class LoginStart implements Action {
-  readonly type = AuthorizationActionTypes.LoginStart;
-  constructor(public login: string, public password: string) {}
+interface ILoginResult {
+  token: string;
 }
 
-export class LoginDone implements Action {
-  readonly type = AuthorizationActionTypes.LoginDone;
-  constructor(public token: string) {}
+interface ILoginError {
+  message: string;
 }
 
-export class LoginFailed implements Action {
-  readonly type = AuthorizationActionTypes.LoginFailed;
-  constructor(public error: string) {}
-}
+export const Login = actionCreator.async<ILoginParams, ILoginResult, ILoginError>('Login');
 
-export class Logout implements Action {
-  readonly type = AuthorizationActionTypes.Logout;
-}
-
-
-export type AuthorizationActions = LoginStart | LoginDone | LoginFailed | Logout;
+export const Logout = actionCreator('Logout');
