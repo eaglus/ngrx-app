@@ -1,3 +1,12 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>My First App</span>
+      <button mat-button (click)="doLogout()" *ngIf="isAuthorized$ | async">
+        Logout
+      </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+
 <div class="content-wrapper">
   <router-outlet></router-outlet>
 </div>

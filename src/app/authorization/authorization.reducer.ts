@@ -12,7 +12,8 @@ export enum AuthorizationStatus {
 export interface StateAuthorized {
   status: AuthorizationStatus.Authorized;
   login: string;
-  token: string;
+  id: string;
+  userId: string;
 }
 
 export interface StateAuthorizing {
@@ -47,18 +48,19 @@ export function reducer(state: State = initialState, action: Action): State {
       login: action.payload.login
     };
   } else if (isType(action, Login.done)) {
-    const { payload } = action;
+    const { payload: { params, result } } = action;
     return {
       status: AuthorizationStatus.Authorized,
-      login: payload.params.login,
-      token: payload.result.token
+      login: params.login,
+      id: result.id,
+      userId: result.userId,
     };
   } else if (isType(action, Login.failed)) {
     const { payload } = action;
     return {
-      status: AuthorizationStatus.Authorized,
+      status: AuthorizationStatus.Error,
       login: payload.params.login,
-      token: payload.error.message
+      error: payload.error.message
     };
   } else if (isType(action, Logout)) {
     return initialState;

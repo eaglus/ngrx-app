@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { createSelector } from '@ngrx/store';
 
 import {State} from './reducers';
-import { AuthorizationStatus } from './authorization';
+import { AuthorizationStatus, Logout } from './authorization';
 
 
 export const selectAuthorization = (state: State) => state.authorization;
@@ -24,6 +24,9 @@ export class AppComponent {
   isAuthorized$ = this.store.pipe(select(selectIsAuthorized));
 
   constructor(private store: Store<State>) {
-    console.log('store', store);
+  }
+
+  doLogout() {
+    this.store.dispatch(Logout());
   }
 }

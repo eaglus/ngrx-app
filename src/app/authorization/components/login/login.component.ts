@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { createSelector } from '@ngrx/store';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { State } from '../../../reducers';
 import { AuthorizationStatus } from '../../authorization.reducer';
@@ -23,15 +24,33 @@ export const selectIsAuthorized = createSelector(
 export class LoginComponent {
   private login = '';
   private password = '';
+  private form: FormGroup;
 
-  constructor(private store: Store<State>) {
+  constructor(
+    private store: Store<State>,
+    private formBuilder: FormBuilder
+  ) {
     console.log('store', store);
   }
 
+  ngOnInit() {
+    this.form = this.formBuilder.group({
+      login: [null, [Validators.required]],
+      password: [null, Validators.required],
+    });
+  }
+  
   doLogin() {
+    const { controls } = this.form;
+    const login = controls['login'].value;
+    const password = controls['password'].value;
     this.store.dispatch(Login.started({
-      login: this.login,
-      password: this.password
+      login,
+      password
     }));
   }
+
+  hasError(controlName: string) {
+    return !this.form.controls[controlName].valid;
+  }  
 }

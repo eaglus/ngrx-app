@@ -8,7 +8,8 @@ interface ILoginParams {
 }
 
 interface ILoginResult {
-  token: string;
+  id: string;
+  userId: string;
 }
 
 interface ILoginError {

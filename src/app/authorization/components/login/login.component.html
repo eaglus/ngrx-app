@@ -1,21 +1,24 @@
-<mat-card class="example-card">
+<mat-card>
     <mat-card-header>
         <mat-card-title>Login</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <form class="example-form">
-            <table class="example-full-width" cellspacing="0">
+
+        <form [formGroup]="form" autocomplete="off" novalidate (ngSubmit)="createOwner(form.value)">
+            <table cellspacing="0">
                 <tr>
                     <td>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Login" [(ngModel)]="login" name="login" required>
+                        <mat-form-field>
+                            <input matInput placeholder="Login" formControlName="login" name="login">
+                            <mat-error *ngIf="hasError('login')">Login is required</mat-error> 
                         </mat-form-field>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Password" [(ngModel)]="password"type="password" name="password" required>
+                        <mat-form-field>
+                            <input matInput placeholder="Password" formControlName="password"type="password" name="password">
+                            <mat-error *ngIf="hasError('password')">Password is required</mat-error> 
                         </mat-form-field>
                     </td>
                 </tr>
@@ -24,6 +27,6 @@
         <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button (click)="doLogin()" color="primary">Login</button>
+        <button mat-raised-button (click)="doLogin()" color="primary" [disabled]="!form.valid">Login</button>
     </mat-card-actions>
 </mat-card>
