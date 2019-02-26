@@ -1,13 +1,8 @@
 import actionCreatorFactory from 'typescript-fsa';
 
+import { Call, ApiError } from '../serverApi';
+
 const actionCreator = actionCreatorFactory('explorer');
 
-interface ILoadResult {
-    data: any[];
-}
-
-interface ILoadError {
-    message: string;
-}
-
-export const Load = actionCreator.async<void, ILoadResult, ILoadError>('load');
+export const LoadAll = actionCreator.async<void, Call[], ApiError>('load all');
+export const LoadOne = actionCreator.async<number, Call, ApiError>('load one');

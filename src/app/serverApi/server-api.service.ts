@@ -8,11 +8,31 @@ import { map } from 'rxjs/operators';
 
 const url = 'https://diabolocom-exercise.herokuapp.com/api/';
 
-interface LoginResponse {
+export interface LoginResponse {
     id: string;
     ttl: number;
     created: string;
     userId: string;    
+}
+
+export interface CallWrapupAgent {
+    id: number;
+    login: string;
+}
+
+export interface CallWrapup {
+    agent: CallWrapupAgent;
+}
+
+export interface Call {
+    callId: number;
+    ​callStart​: string;
+    ​callDuration: number;
+    ​callWrapups: CallWrapup[];
+}
+
+export interface ApiError {
+    message: string;
 }
 
 @Injectable({
@@ -37,12 +57,31 @@ export class ServerApiService {
                     'Accept': 'application/json'
                 }
             }
-        ).pipe(
-            map(response => response as LoginResponse)
-        );
+        ) as Observable<LoginResponse>;
+    }
+
+    public getCalls(accessToken: string): Observable<Call[]> {
+        return this.http.get(
+            url + 'Calls?access_token=' + accessToken, 
+            {
+                headers: {
+                    'Accept': 'application/json'
+                }            
+            }
+        ) as Observable<Call[]>;
+    }
+
+    public getCall(callId: number, accessToken: string): Observable<Call> {
+        return this.http.get(
+            url + 'Calls/' + callId + '?access_token=' + accessToken, 
+            {
+                headers: {
+                    'Accept': 'application/json'
+                }            
+            }
+        ) as Observable<Call>;
     }
 
     public logout(token: string) {
-
     }
 }

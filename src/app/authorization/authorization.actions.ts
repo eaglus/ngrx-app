@@ -1,21 +1,18 @@
 import actionCreatorFactory from 'typescript-fsa';
 
+import { LoginResponse } from '../serverApi';
+
 const actionCreator = actionCreatorFactory('authorization');
 
-interface ILoginParams {
+interface LoginParams {
   login: string;
   password: string;
 }
 
-interface ILoginResult {
-  id: string;
-  userId: string;
-}
-
-interface ILoginError {
+interface LoginError {
   message: string;
 }
 
-export const Login = actionCreator.async<ILoginParams, ILoginResult, ILoginError>('Login');
+export const Login = actionCreator.async<LoginParams, LoginResponse, LoginError>('Login');
 
 export const Logout = actionCreator('Logout');

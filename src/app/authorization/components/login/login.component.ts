@@ -22,8 +22,6 @@ export const selectIsAuthorized = createSelector(
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  private login = '';
-  private password = '';
   private form: FormGroup;
 
   constructor(

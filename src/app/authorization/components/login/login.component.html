@@ -3,13 +3,17 @@
         <mat-card-title>Login</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-
-        <form [formGroup]="form" autocomplete="off" novalidate (ngSubmit)="createOwner(form.value)">
+        <form [formGroup]="form" autocomplete="off" novalidate>
             <table cellspacing="0">
                 <tr>
                     <td>
                         <mat-form-field>
-                            <input matInput placeholder="Login" formControlName="login" name="login">
+                            <input
+                                matInput
+                                placeholder="Login"
+                                formControlName="login"
+                                name="login"
+                            >
                             <mat-error *ngIf="hasError('login')">Login is required</mat-error> 
                         </mat-form-field>
                     </td>
@@ -17,7 +21,13 @@
                 <tr>
                     <td>
                         <mat-form-field>
-                            <input matInput placeholder="Password" formControlName="password"type="password" name="password">
+                            <input
+                                matInput
+                                placeholder="Password"
+                                formControlName="password"
+                                type="password"
+                                name="password"
+                            >
                             <mat-error *ngIf="hasError('password')">Password is required</mat-error> 
                         </mat-form-field>
                     </td>

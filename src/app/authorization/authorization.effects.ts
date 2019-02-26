@@ -23,10 +23,7 @@ export class AuthorizationEffects {
           return this.api.login(login, password).pipe(
             map(response => Login.done({
               params,
-              result: {
-                id: response.id,
-                userId: response.userId
-              }
+              result: response
             })),
             catchError(error => of(Login.failed({
               params,

@@ -20,7 +20,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { reducers, metaReducers } from './reducers';
 import { LoginComponent, AuthorizationEffects } from './authorization';
-import { ExplorerComponent } from './explorer';
+import { ExplorerComponent, ExplorerEffects } from './explorer';
 import { getInitialState, LocalStorageEffects } from './localStorage';
 
 @NgModule({
@@ -57,7 +57,7 @@ import { getInitialState, LocalStorageEffects } from './localStorage';
     StoreRouterConnectingModule.forRoot(),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
-    EffectsModule.forRoot([AuthorizationEffects, LocalStorageEffects]),
+    EffectsModule.forRoot([AuthorizationEffects, LocalStorageEffects, ExplorerEffects]),
   ],
   providers: [],
   bootstrap: [AppComponent]
