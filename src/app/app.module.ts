@@ -10,8 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 
 import {
-  MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatTableModule,
-  MatToolbarModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule
+  MatButtonModule, MatCardModule, MatDialogModule, MatInputModule,
+  MatToolbarModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule,
+  MatTableModule
 } from '@angular/material';
 
 import { environment } from '../environments/environment';
@@ -20,14 +21,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { reducers, metaReducers } from './reducers';
 import { LoginComponent, AuthorizationEffects } from './authorization';
-import { ExplorerComponent, ExplorerEffects } from './explorer';
+import { CallExplorerComponent, CallCardComponent, CallExplorerEffects } from './callExplorer';
 import { getInitialState, LocalStorageEffects } from './localStorage';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    ExplorerComponent
+    CallExplorerComponent,
+    CallCardComponent,
   ],
   imports: [
     HttpClientModule,
@@ -57,7 +59,7 @@ import { getInitialState, LocalStorageEffects } from './localStorage';
     StoreRouterConnectingModule.forRoot(),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
-    EffectsModule.forRoot([AuthorizationEffects, LocalStorageEffects, ExplorerEffects]),
+    EffectsModule.forRoot([AuthorizationEffects, LocalStorageEffects, CallExplorerEffects]),
   ],
   providers: [],
   bootstrap: [AppComponent]

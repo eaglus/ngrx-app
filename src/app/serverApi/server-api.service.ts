@@ -22,6 +22,8 @@ export interface CallWrapupAgent {
 
 export interface CallWrapup {
     agent: CallWrapupAgent;
+    wrapupName: string;
+    wrapupComment: string;
 }
 
 export interface Call {

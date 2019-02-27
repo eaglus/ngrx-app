@@ -5,18 +5,18 @@ import {
 import { routerReducer, RouterReducerState } from '@ngrx/router-store';
 
 import { AuthorizationState, authorizationReducer } from '../authorization';
-import { ExplorerState, explorerReducer } from '../explorer';
+import { CallExplorerState, callExplorerReducer } from '../callExplorer';
 
 import { environment } from '../../environments/environment';
 
 export interface State {
   authorization: AuthorizationState;
-  explorer: ExplorerState;
+  callExplorer: CallExplorerState;
   router: RouterReducerState;
 }
 export const reducers: ActionReducerMap<State> = {
   authorization: authorizationReducer,
-  explorer: explorerReducer,
+  callExplorer: callExplorerReducer,
   router: routerReducer
 };
 

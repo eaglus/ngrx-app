@@ -1,8 +1,9 @@
 import { Action } from '@ngrx/store';
 import { isType } from 'typescript-fsa';
 
+import { AuthorizationStateSegment } from '../authorization';
 import { Call } from '../serverApi';
-import { LoadAll, LoadOne } from './explorer.actions';
+import { LoadAll, LoadOne } from './callExplorer.actions';
 
 export enum LoadStatus {
     Nothing,
@@ -19,8 +20,10 @@ export interface State {
 }
 
 export interface StateSegment {
-  explorer: State;
+  callExplorer: State;
 }
+
+export type StateSegmentWithDeps = StateSegment & AuthorizationStateSegment;
 
 export const initialState: State = {
   status: LoadStatus.Nothing,

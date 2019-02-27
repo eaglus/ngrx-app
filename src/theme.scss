@@ -1,0 +1,20 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+@mixin mat-table-hover($is-dark) {
+    [mat-row] {
+      @if $is-dark {
+        &:hover {
+          background: rgba(255, 255, 255, 0.04);
+        }
+      }
+      @else {
+        &:hover {
+          background: rgba(0, 0, 0, 0.04);
+        }
+      }
+    }
+}
+
+//https://github.com/angular/material2/issues/8204
+@include mat-table-hover(false);

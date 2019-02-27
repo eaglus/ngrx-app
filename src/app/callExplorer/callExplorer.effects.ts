@@ -7,15 +7,15 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Store, select, Action } from '@ngrx/store';
 
 import { ServerApiService, ApiError } from '../serverApi';
-import { selectAuthorization, AuthorizationStateSegment, AuthorizationStatus } from '../authorization';
-import { LoadAll, LoadOne } from './explorer.actions';
-import { StateSegment, LoadStatus } from './explorer.reducer';
-import { selectCallById, selectExplorerStatus } from './explorer.selectors';
+import { selectAuthorization, AuthorizationStatus } from '../authorization';
+import { LoadAll, LoadOne } from './callExplorer.actions';
+import { StateSegmentWithDeps, LoadStatus } from './callExplorer.reducer';
+import { createCallByIdSelector, selectStatus } from './callExplorer.selectors';
 
 const emptyActions = EMPTY as Observable<Action>;
 
 @Injectable()
-export class ExplorerEffects {
+export class CallExplorerEffects {
 
   loadAllStarted$ = this.actions$.pipe(
     filter(LoadAll.started.match)
@@ -25,7 +25,7 @@ export class ExplorerEffects {
     filter(LoadOne.started.match)
   );
 
-  explorerStatus$ = this.store.pipe(map(selectExplorerStatus));
+  explorerStatus$ = this.store.pipe(map(selectStatus));
   authorization$ = this.store.pipe(map(selectAuthorization));
 
   @Effect()
@@ -57,7 +57,7 @@ export class ExplorerEffects {
           );
         } else if (isType(action, LoadOne.started)) {
           const callId = action.payload;
-          const call = selectCallById(state, callId);
+          const call = createCallByIdSelector(callId)(state);
           if (call) {
             return emptyActions;
           } else {
@@ -86,6 +86,6 @@ export class ExplorerEffects {
   constructor(
     private actions$: Actions,
     private api: ServerApiService,
-    private store: Store<StateSegment & AuthorizationStateSegment>
+    private store: Store<StateSegmentWithDeps>
   ) {}
 }
