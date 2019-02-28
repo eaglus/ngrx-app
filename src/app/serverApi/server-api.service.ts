@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 // Swagger​: ​https://diabolocom-exercise.herokuapp.com/explorer/
 // Login account:​ username: test / password: test4321
@@ -101,6 +102,10 @@ export class ServerApiService {
         ) as Observable<CallData>;
     }
 
-    public logout(token: string) {
+    public logout(accessToken: string): Observable<void> {
+        return this.http.post(
+            url + 'Users/logout?access_token=' + accessToken, 
+            null
+        ).pipe(map(() => undefined));
     }
 }

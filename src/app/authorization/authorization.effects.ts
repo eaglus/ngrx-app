@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { of } from 'rxjs';
-import { filter, map, mapTo, tap, switchMap, catchError, ignoreElements } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { of, throwError } from 'rxjs';
+import { filter, map, mergeMap, mapTo, tap, switchMap, catchError, withLatestFrom, ignoreElements } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-import { Login, Logout } from './authorization.actions';
-import { ServerApiService } from '../serverApi';
+import { ServerApiService, ApiError } from '../serverApi';
 import { SaveState } from '../localStorage';
+
+import { Login, Logout } from './authorization.actions';
+import { selectAuthorization } from './authorization.selectors';
+import { StateSegment, AuthorizationStatus } from './authorization.reducer';
 
 
 @Injectable()
 export class AuthorizationEffects {
+
+  authorization$ = this.store.pipe(map(selectAuthorization));
 
   @Effect()
   login$ = this.actions$
@@ -45,16 +51,28 @@ export class AuthorizationEffects {
     @Effect()
     logoutRoute$ = this.actions$
       .pipe(
-        filter(Logout.match),
+        filter(Logout.started.match),
+        withLatestFrom(this.authorization$),
+        mergeMap(([_action, authorization]) => authorization.status === AuthorizationStatus.Authorized
+          ? this.api.logout(authorization.id)
+          : throwError({ message: 'Unauthorized attempt to load' } as ApiError)
+        ),
         tap(() => {
           this.router.navigateByUrl('/login');
         }),
-        mapTo(SaveState())
+        mergeMap(() => [
+          Logout.done({
+            params: undefined,
+            result: undefined
+          }),
+          SaveState()
+        ])
       );
 
   constructor(
     private actions$: Actions,
     private api: ServerApiService,
     private router: Router,
+    private store: Store<StateSegment>,
   ) {}
 }

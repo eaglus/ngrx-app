@@ -62,7 +62,7 @@ export function reducer(state: State = initialState, action: Action): State {
       login: payload.params.login,
       error: payload.error.message
     };
-  } else if (isType(action, Logout)) {
+  } else if (isType(action, Logout.done)) {
     return initialState;
   } else {
     return state;

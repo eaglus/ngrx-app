@@ -1,4 +1,8 @@
-<table mat-table [dataSource]="getData(calls$ | async)" *ngIf="!(isLoading$ | async); else loadSpinner">
+<table
+    mat-table 
+    [dataSource]="getData(calls$ | async)" 
+    *ngIf="!(isLoading$ | async) && !(error$ | async); else loadSpinner"
+>
     <ng-container matColumnDef="callId">
         <th mat-header-cell *matHeaderCellDef> Id </th>
         <td mat-cell *matCellDef="let data"> {{data.callId}} </td>
@@ -23,11 +27,17 @@
         <th mat-header-cell *matHeaderCellDef> Wrapup Name </th>
         <td mat-cell *matCellDef="let data"> {{data.callWrapups[0].wrapupName}} </td>
     </ng-container>
-        
+
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row (click)="onRowClick(row)" *matRowDef="let row; columns: columnsToDisplay;" class="data-row"></tr>
 </table>
 
+<div class="load-error" *ngIf="(error$ | async) as error">
+    <div>Error:</div>
+    <mat-error>
+        {{error}}
+    </mat-error>
+</div>
 
 <ng-template #loadSpinner>
     <mat-spinner *ngIf="isLoading$ | async"></mat-spinner>

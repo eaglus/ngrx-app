@@ -15,4 +15,4 @@ interface LoginError {
 
 export const Login = actionCreator.async<LoginParams, LoginResponse, LoginError>('Login');
 
-export const Logout = actionCreator('Logout');
+export const Logout = actionCreator.async<void, void, LoginError>('Logout');

@@ -8,7 +8,7 @@ import { get } from 'lodash';
 import { CallWrapup, Call } from '../../serverApi';
 import { LoadOne, Update } from '../callExplorer.actions';
 import { StateSegment } from '../callExplorer.reducer';
-import { createCallByIdSelector, selectIsLoading } from '../callExplorer.selectors';
+import { createCallByIdSelector, selectIsLoading, selectError } from '../callExplorer.selectors';
 
 @Component({
     selector: 'app-card',
@@ -77,6 +77,8 @@ export class CallCardComponent {
         this.store.pipe(map(createCallByIdSelector(id)))
     ));
 
+    public error$ = this.store.pipe(map(selectError));
+
     constructor(
         private store: Store<StateSegment>,
         private route: ActivatedRoute,
@@ -103,7 +105,23 @@ export class CallCardComponent {
   }
 
   updateCall(call: Call) {
-      this.store.dispatch(Update.started(call));
+      const wrapups = call.data.callWrapups;
+      const { controls } = this.form;
+      const updated: Call = {
+          ...call,
+          data: {
+              ...call.data,
+              callWrapups: [
+                  {
+                      ...wrapups[0],
+                      wrapupName: controls['wrapupName'].value,                      
+                      wrapupComment: controls['wrapupComment'].value,
+                  },
+                  ...wrapups.slice(1)
+              ]
+          }
+      };
+      this.store.dispatch(Update.started(updated));
   }
 
   hasError(controlName: string, errorCode: string) {

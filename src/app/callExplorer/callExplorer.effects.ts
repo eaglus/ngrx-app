@@ -1,5 +1,5 @@
 import { of, EMPTY, merge, throwError, Observable } from 'rxjs';
-import { filter, catchError, switchMap, map, take, withLatestFrom } from 'rxjs/operators';
+import { filter, catchError, switchMap, map, concatMap, withLatestFrom, mapTo } from 'rxjs/operators';
 import { isType } from 'typescript-fsa';
 
 import { Injectable } from '@angular/core';
@@ -31,6 +31,36 @@ export class CallExplorerEffects {
 
   explorerStatus$ = this.store.pipe(map(selectStatus));
   authorization$ = this.store.pipe(map(selectAuthorization));
+
+  @Effect()
+  update$ = this.updateStarted$.pipe(
+    withLatestFrom(
+      this.authorization$,
+    ),    
+    concatMap(([action, authorization]) => {
+      if (authorization.status === AuthorizationStatus.Authorized) {
+        return this.api.updateCall(action.payload, authorization.id).pipe(
+          map(
+            result => Update.done({
+              params: action.payload,
+              result: {
+                data: result,
+                isUpdating: false
+              }
+            }),
+          ),
+          catchError((error: ApiError) => of(Update.failed({
+            params: action.payload,
+            error
+          })))
+        );
+      } else {
+        return throwError({
+          message: 'Unauthorized attempt to load'
+        } as ApiError);
+      }
+    })
+  );
 
   @Effect()
   load$ = merge(

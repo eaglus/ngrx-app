@@ -25,3 +25,9 @@ export const selectIsLoading = createSelector(
     selectStatus,
     status => status === LoadStatus.Loading || status === LoadStatus.Nothing
 );
+
+export const selectError = createSelector(
+    selectState,
+    selectStatus,
+    (state, status) => status === LoadStatus.Error && state.error
+);

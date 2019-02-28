@@ -27,6 +27,6 @@ export class AppComponent {
   }
 
   doLogout() {
-    this.store.dispatch(Logout());
+    this.store.dispatch(Logout.started());
   }
 }

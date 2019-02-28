@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 
-import { selectCalls, selectIsLoading } from './callExplorer.selectors';
+import { selectCalls, selectIsLoading, selectError } from './callExplorer.selectors';
 import { LoadAll } from './callExplorer.actions';
 import { StateSegmentWithDeps } from './callExplorer.reducer';
 import { Call, CallData } from '../serverApi';
@@ -17,6 +17,7 @@ import { Call, CallData } from '../serverApi';
 export class CallExplorerComponent {
   public calls$ = this.store.pipe(map(selectCalls));
   public isLoading$ = this.store.pipe(map(selectIsLoading));
+  public error$ = this.store.pipe(map(selectError));
   public columnsToDisplay = ['callId', '​callStart​', '​callDuration', 'agent', 'wrapupName'];
 
   constructor(
