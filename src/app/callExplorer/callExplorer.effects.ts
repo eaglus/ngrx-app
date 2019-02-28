@@ -56,12 +56,12 @@ export class CallExplorerEffects {
             })))
           );
         } else if (isType(action, LoadOne.started)) {
-          const callId = action.payload;
-          const call = createCallByIdSelector(callId)(state);
+          const id = action.payload;
+          const call = createCallByIdSelector(id)(state);
           if (call) {
             return emptyActions;
           } else {
-            return this.api.getCall(callId, authorization.id).pipe(
+            return this.api.getCall(id, authorization.id).pipe(
               map(
                 result => LoadOne.done({
                   params: action.payload,

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 // Swagger​: ​https://diabolocom-exercise.herokuapp.com/explorer/
 // Login account:​ username: test / password: test4321
@@ -27,6 +26,7 @@ export interface CallWrapup {
 }
 
 export interface Call {
+    id: string;
     callId: number;
     ​callStart​: string;
     ​callDuration: number;
@@ -73,15 +73,27 @@ export class ServerApiService {
         ) as Observable<Call[]>;
     }
 
-    public getCall(callId: number, accessToken: string): Observable<Call> {
+    public getCall(id: string, accessToken: string): Observable<Call> {
         return this.http.get(
-            url + 'Calls/' + callId + '?access_token=' + accessToken, 
+            url + 'Calls/' + id + '?access_token=' + accessToken, 
             {
                 headers: {
                     'Accept': 'application/json'
                 }            
             }
         ) as Observable<Call>;
+    }
+
+    public updateCall(call: Call, accessToken: string): Observable<Call> {
+        return this.http.put(
+            url + 'Calls/' + call.id + '?access_token=' + accessToken,
+            call,
+            {
+                headers: {
+                    'Accept': 'application/json'
+                }            
+            }
+        ) as Observable<Call>;        
     }
 
     public logout(token: string) {

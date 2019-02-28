@@ -11,9 +11,9 @@ export const selectCalls = createSelector(
     explorer => explorer.calls
 );
 
-export const createCallByIdSelector = (callId: number) => createSelector(
+export const createCallByIdSelector = (id: string) => createSelector(
     selectCalls,
-    (calls: Call[]) => calls.find(item => item.callId === callId)
+    (calls: Call[]) => calls.find(item => item.id === id)
 );
 
 export const selectStatus = createSelector(

@@ -1,0 +1,16 @@
+.card {
+    width: 300px;
+    table {
+        position: relative;
+        width: 100%;
+
+        .mat-form-field {
+            display: block;
+        }
+
+        textarea {
+            position: relative;
+            height: 200px;
+        }
+    }
+}

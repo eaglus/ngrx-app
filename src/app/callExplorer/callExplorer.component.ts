@@ -27,6 +27,6 @@ export class CallExplorerComponent {
   }
 
   onRowClick(call: Call) {
-    this.router.navigate(['call', call.callId]);
+    this.router.navigate(['call', call.id]);
   }
 }

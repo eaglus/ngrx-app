@@ -10,6 +10,8 @@ import { LoadOne } from '../callExplorer.actions';
 import { StateSegment } from '../callExplorer.reducer';
 import { createCallByIdSelector, selectIsLoading } from '../callExplorer.selectors';
 
+//callId, channel, callStart, callEnd, callDuration, dialingDuration, ivrDuration, waitDuration, talkDuration, contact phone, wrapupId, wrapupName*, wrapupComment*
+
 @Component({
     selector: 'card',
     templateUrl: './callCard.component.html',
@@ -23,7 +25,7 @@ export class CallCardComponent {
     
     public isLoading$ = this.store.pipe(map(selectIsLoading));
     private id$ = this.route.paramMap.pipe(
-        map(params => Number(params.get('id')))
+        map(params => params.get('id'))
     );
 
     public call$ = this.id$.pipe(switchMap(id =>
