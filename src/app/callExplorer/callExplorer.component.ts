@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 import { selectCalls, selectIsLoading } from './callExplorer.selectors';
 import { LoadAll } from './callExplorer.actions';
 import { StateSegmentWithDeps } from './callExplorer.reducer';
-import { Call } from '../serverApi';
+import { Call, CallData } from '../serverApi';
 
 @Component({
-  selector: 'explorer',
+  selector: 'app-call-explorer',
   templateUrl: './callExplorer.component.html',
   styleUrls: ['./callExplorer.component.scss']
 })
@@ -21,12 +21,16 @@ export class CallExplorerComponent {
 
   constructor(
     private store: Store<StateSegmentWithDeps>,
-    private router: Router,    
+    private router: Router,
   ) {
     store.dispatch(LoadAll.started());
   }
 
-  onRowClick(call: Call) {
-    this.router.navigate(['call', call.id]);
+  onRowClick(data: CallData) {
+    this.router.navigate(['call', data.id]);
+  }
+
+  getData(calls: Call[]) {
+    return calls.map(call => call.data);
   }
 }

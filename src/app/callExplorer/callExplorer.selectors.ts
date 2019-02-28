@@ -13,7 +13,7 @@ export const selectCalls = createSelector(
 
 export const createCallByIdSelector = (id: string) => createSelector(
     selectCalls,
-    (calls: Call[]) => calls.find(item => item.id === id)
+    (calls: Call[]) => calls.find(item => item.data.id === id)
 );
 
 export const selectStatus = createSelector(

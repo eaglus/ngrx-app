@@ -1,1 +1,1 @@
-export { ServerApiService, CallWrapup, Call, CallWrapupAgent, LoginResponse, ApiError } from './server-api.service';
+export { ServerApiService, CallWrapup, Call, CallData, CallWrapupAgent, LoginResponse, ApiError } from './server-api.service';

@@ -1,14 +1,14 @@
 import { of, EMPTY, merge, throwError, Observable } from 'rxjs';
-import { sample, filter, catchError, switchMap, map, take, withLatestFrom } from 'rxjs/operators';
+import { filter, catchError, switchMap, map, take, withLatestFrom } from 'rxjs/operators';
 import { isType } from 'typescript-fsa';
 
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { Store, select, Action } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 
 import { ServerApiService, ApiError } from '../serverApi';
 import { selectAuthorization, AuthorizationStatus } from '../authorization';
-import { LoadAll, LoadOne } from './callExplorer.actions';
+import { LoadAll, LoadOne, Update } from './callExplorer.actions';
 import { StateSegmentWithDeps, LoadStatus } from './callExplorer.reducer';
 import { createCallByIdSelector, selectStatus } from './callExplorer.selectors';
 
@@ -23,6 +23,10 @@ export class CallExplorerEffects {
 
   loadOneStarted$ = this.actions$.pipe(
     filter(LoadOne.started.match)
+  );
+
+  updateStarted$ = this.actions$.pipe(
+    filter(Update.started.match)
   );
 
   explorerStatus$ = this.store.pipe(map(selectStatus));
@@ -47,7 +51,10 @@ export class CallExplorerEffects {
             map(
               result => LoadAll.done({
                 params: action.payload,
-                result
+                result: result.map(data => ({
+                  data,
+                  isUpdating: false
+                }))
               }),
             ),
             catchError((error: ApiError) => of(LoadAll.failed({
@@ -65,12 +72,15 @@ export class CallExplorerEffects {
               map(
                 result => LoadOne.done({
                   params: action.payload,
-                  result
+                  result: {
+                    data: result,
+                    isUpdating: false
+                  }
                 }),
               ),
               catchError((error: ApiError) => of(LoadOne.failed({
                 params: action.payload,
-                error: error
+                error
               })))
             );
           }

@@ -3,7 +3,7 @@ import { isType } from 'typescript-fsa';
 
 import { AuthorizationStateSegment } from '../authorization';
 import { Call } from '../serverApi';
-import { LoadAll, LoadOne } from './callExplorer.actions';
+import { LoadAll, LoadOne, Update } from './callExplorer.actions';
 
 export enum LoadStatus {
     Nothing,
@@ -30,7 +30,31 @@ export const initialState: State = {
   calls: []
 };
 
+const createCallUpdater = (state: State) => (id: number, updater: (call: Call) => Call[]) => {
+  const { calls } = state;
+  const idx = calls.findIndex(item => item.data.callId === id);
+  const found = idx !== -1;
+  const insertCalls = updater(found ? calls[idx] : null);
+  const newCalls = found
+    ? [
+      ...calls.slice(0, idx),
+      ...insertCalls,
+      ...calls.slice(idx + 1)
+    ]
+    : [
+      ...calls,
+      ...insertCalls,
+    ];
+
+  return {
+    ...state,
+    calls: newCalls
+  };
+};
+
 export function reducer(state: State = initialState, action: Action): State {
+  const callUpdater = createCallUpdater(state);
+
   if (isType(action, LoadAll.started) || isType(action, LoadOne.started)) {
     if (state.status !== LoadStatus.LoadedAll && state.status !== LoadStatus.Loading) {
       return {
@@ -56,16 +80,39 @@ export function reducer(state: State = initialState, action: Action): State {
     };
   } else if (isType(action, LoadOne.done)) {
     const { payload: { result: call } } = action;
-    const { calls } = state;
-    const idx = calls.findIndex(item => item.callId === call.callId);
-    const newCalls = idx === -1
-      ? [call, ...calls]
-      : [...calls.slice(0, idx), call, ...calls.slice(idx + 1)];
 
     return {
-        ...state,
+        ...callUpdater(call.data.callId, () => [call]),
         status: LoadStatus.LoadedPartial,
-        calls: newCalls
+    };
+  } else if (isType(action, Update.started)) {
+    const { payload: call } = action;
+    return {
+        ...state,
+        ...callUpdater(call.data.callId, () => [{
+          ...call,
+          isUpdating: true
+        }]),
+    };
+  } else if (isType(action, Update.done)) {
+    const { payload: { result: call } } = action;
+    return {
+        ...state,
+        ...callUpdater(call.data.callId, () => [{
+          ...call,
+          isUpdating: false
+        }]),
+    };
+  } else if (isType(action, Update.failed)) {
+    const { payload: { params: call, error } } = action;
+    return {
+        ...state,
+        ...callUpdater(call.data.callId, () => [{
+          ...call,
+          isUpdating: false
+        }]),
+        status: LoadStatus.Error,
+        error: error.message
     };
   } else {
     return state;

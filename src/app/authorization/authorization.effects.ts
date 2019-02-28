@@ -17,7 +17,6 @@ export class AuthorizationEffects {
     .pipe(
       filter(Login.started.match),
       switchMap(action => {
-          console.log('Send login start', action);
           const params = action.payload;
           const {login, password} = params;
           return this.api.login(login, password).pipe(

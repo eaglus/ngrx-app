@@ -1,54 +1,71 @@
-<mat-card 
-    *ngIf="!(isLoading$ | async); else loadSpinner"
-    class="card"
->
+<mat-card *ngIf="!(isLoading$ | async); else loadSpinner" class="card">
+  <ng-container *ngIf="(call$ | async) as call; else notFound">
     <mat-card-header>
-        <mat-card-title>Edit call</mat-card-title>
+      <mat-card-title>Edit call</mat-card-title>
     </mat-card-header>
-    <mat-card-content>    
-        <form [formGroup]="form" autocomplete="off" novalidate>
-            <table cellspacing="0">
-                <tr>
-                    <td>
-                        <mat-form-field>
-                            <input 
-                                matInput 
-                                placeholder="Wrapup name" 
-                                formControlName="wrapupName" 
-                                name="wrapupName"
-                            >
-                            <mat-error *ngIf="hasError('wrapupName', 'required')">Wrapup name is required</mat-error> 
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <mat-form-field>
-                            <textarea matInput 
-                                placeholder="Wrapup comment" 
-                                formControlName="wrapupComment" 
-                                name="wrapupComment" 
-                            >
-                            </textarea>
-                            <mat-error *ngIf="hasError('wrapupComment', 'required')">Wrapup comment is required</mat-error> 
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
-        </form>
+    <mat-card-content>
+      <form [formGroup]="form" autocomplete="off" novalidate>
+        <table cellspacing="0">
+          <tr *ngFor="let row of readonlyFields">
+            <td *ngFor="let col of row">
+              <mat-form-field>
+                <mat-label>{{col.name}}</mat-label>
+                <input
+                  matInput
+                  disabled
+                  name="{{col.code}}"
+                  value="{{getField(call, col.code)}}"
+                />
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="Wrapup name"
+                  formControlName="wrapupName"
+                  name="wrapupName"
+                />
+                <mat-error *ngIf="hasError('wrapupName', 'required')">Wrapup name is required</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <mat-form-field>
+                <textarea
+                  matInput
+                  placeholder="Wrapup comment"
+                  formControlName="wrapupComment"
+                  name="wrapupComment"
+                >
+                </textarea>
+                <mat-error *ngIf="hasError('wrapupComment', 'required')">Wrapup comment is required</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+      </form>
     </mat-card-content>
     <mat-card-actions>
-        <button 
-            mat-raised-button 
-            (click)="updateCall()" 
-            color="primary" 
-            [disabled]="!form.valid"
-        >
-            Submit
-        </button>
+      <button
+        mat-raised-button
+        (click)="updateCall(call)"
+        color="primary"
+        [disabled]="!form.valid"
+      >
+        Submit
+      </button>
     </mat-card-actions>
+  </ng-container>
+
+  <ng-template #notFound>
+    Card not found for id: {{id$ | async}}
+  </ng-template>    
 </mat-card>
 
 <ng-template #loadSpinner>
-    <mat-spinner></mat-spinner>
+  <mat-spinner></mat-spinner>
 </ng-template>
