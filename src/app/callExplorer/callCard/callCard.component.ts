@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { get } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
 
 import { CallWrapup, Call } from '../../serverApi';
 import { LoadOne, Update } from '../callExplorer.actions';
@@ -23,47 +24,47 @@ export class CallCardComponent {
 
     private readonlyFields = [
         [{
-            name: 'Call id',
+            name: this.translate.get('Call id'),
             code: 'callId'
         },
         {
-            name: 'Channel',
+            name: this.translate.get('Channel'),
             code: 'channel'
         }],
         [{
-            name: 'Call start',
+            name: this.translate.get('Call start'),
             code: 'callStart'
         },
         {
-            name: 'Call end',
+            name: this.translate.get('Call end'),
             code: 'callEnd'
         }],
         [{
-            name: 'Call duration',
+            name: this.translate.get('Call duration'),
             code: 'callDuration'
         },
         {
-            name: 'Dialing duration',
+            name: this.translate.get('Dialing duration'),
             code: 'dialingDuration'
         }],
         [{
-            name: 'Ivr duration',
+            name: this.translate.get('Ivr duration'),
             code: 'ivrDuration'
         },
         {
-            name: 'Wait duration',
+            name: this.translate.get('Wait duration'),
             code: 'waitDuration'
         }],
         [{
-            name: 'Talk duration',
+            name: this.translate.get('Talk duration'),
             code: 'talkDuration'
         },
         {
-            name: 'Contact phone',
+            name: this.translate.get('Contact phone'),
             code: 'contact.phone'
         }],
         [{
-            name: 'Wrapup id',
+            name: this.translate.get('Wrapup id'),
             code: 'callWrapups[0].wrapupId'
         }],
     ];
@@ -83,6 +84,7 @@ export class CallCardComponent {
         private store: Store<StateSegment>,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
+        private translate: TranslateService,
     ) {
         this.id$.subscribe(id =>
             this.store.dispatch(LoadOne.started(id))
@@ -114,8 +116,8 @@ export class CallCardComponent {
               callWrapups: [
                   {
                       ...wrapups[0],
-                      wrapupName: controls['wrapupName'].value,                      
-                      wrapupComment: controls['wrapupComment'].value,
+                      wrapupName: controls.wrapupName.value,
+                      wrapupComment: controls.wrapupComment.value,
                   },
                   ...wrapups.slice(1)
               ]

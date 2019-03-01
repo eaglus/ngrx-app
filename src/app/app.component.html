@@ -1,8 +1,8 @@
 <mat-toolbar color="primary" class="toolbar">
     <mat-toolbar-row>
-      <span>My First App</span>
+      <span translate>My First App</span>
       <button mat-button (click)="doLogout()" *ngIf="isAuthorized$ | async">
-        Logout
+        {{'Logout' | translate}}
       </button>
     </mat-toolbar-row>
 </mat-toolbar>

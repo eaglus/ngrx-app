@@ -1,7 +1,7 @@
 <mat-card *ngIf="!(isLoading$ | async) && !(error$ | async)" class="card">
   <ng-container *ngIf="(call$ | async) as call; else notFound">
     <mat-card-header>
-      <mat-card-title>Edit call</mat-card-title>
+      <mat-card-title translate>Edit call</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="form" autocomplete="off" novalidate>
@@ -9,7 +9,7 @@
           <tr *ngFor="let row of readonlyFields">
             <td *ngFor="let col of row">
               <mat-form-field>
-                <mat-label>{{col.name}}</mat-label>
+                <mat-label>{{col.name | async}}</mat-label>
                 <input
                   matInput
                   disabled
@@ -24,11 +24,13 @@
               <mat-form-field>
                 <input
                   matInput
-                  placeholder="Wrapup name"
+                  placeholder="{{'Wrapup name' | translate}}"
                   formControlName="wrapupName"
                   name="wrapupName"
                 />
-                <mat-error *ngIf="hasError('wrapupName', 'required')">Wrapup name is required</mat-error>
+                <mat-error *ngIf="hasError('wrapupName', 'required')">
+                  {{'Wrapup name is required' | translate}}
+                </mat-error>
               </mat-form-field>
             </td>
           </tr>
@@ -37,12 +39,12 @@
               <mat-form-field>
                 <textarea
                   matInput
-                  placeholder="Wrapup comment"
+                  placeholder="{{'Wrapup comment' | translate}}"
                   formControlName="wrapupComment"
                   name="wrapupComment"
                 >
                 </textarea>
-                <mat-error *ngIf="hasError('wrapupComment', 'required')">Wrapup comment is required</mat-error>
+                <mat-error *ngIf="hasError('wrapupComment', 'required')">{{'Wrapup comment is required' | translate}}</mat-error>
               </mat-form-field>
             </td>
           </tr>
@@ -56,13 +58,13 @@
         color="primary"
         [disabled]="!form.valid || call.isUpdating"
       >
-        Submit
+        {{'Submit' | translate}}
       </button>
     </mat-card-actions>
   </ng-container>
 
   <ng-template #notFound>
-    Card not found for id: {{id$ | async}}
+    {{'Call not found for id' | translate}}: {{id$ | async}}
   </ng-template>
 
   <div class="update-spinner-wrapper" *ngIf="(call$ | async).isUpdating">
@@ -71,7 +73,7 @@
 </mat-card>
 
 <div class="load-error" *ngIf="(error$ | async) as error">
-    <div>Error:</div>
+    <div>{{'Error' | translate}}:</div>
     <mat-error>
         {{error}}
     </mat-error>

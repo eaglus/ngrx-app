@@ -28,20 +28,16 @@ export class LoginComponent {
     private store: Store<State>,
     private formBuilder: FormBuilder
   ) {
-    console.log('store', store);
-  }
-
-  ngOnInit() {
     this.form = this.formBuilder.group({
       login: [null, [Validators.required]],
       password: [null, Validators.required],
     });
   }
-  
+
   doLogin() {
     const { controls } = this.form;
-    const login = controls['login'].value;
-    const password = controls['password'].value;
+    const login = controls.login.value;
+    const password = controls.password.value;
     this.store.dispatch(Login.started({
       login,
       password
@@ -50,5 +46,5 @@ export class LoginComponent {
 
   hasError(controlName: string) {
     return !this.form.controls[controlName].valid;
-  }  
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 // Swagger​: ​https://diabolocom-exercise.herokuapp.com/explorer/
 // Login account:​ username: test / password: test4321
@@ -39,9 +39,19 @@ export interface Call {
     isUpdating: boolean;
 }
 
-export interface ApiError {
-    message: string;
+export enum ApiErrorCode {
+    Unauthorized,
+    Unknown
 }
+
+export class ApiError {
+    constructor(public message: string, public code: ApiErrorCode) {}
+}
+
+const mapError = <T>() => catchError<T, ApiError>((error: any) => {
+    const result = new ApiError(error.message, ApiErrorCode.Unknown);
+    return [result];
+});
 
 @Injectable({
     providedIn: 'root',
@@ -52,8 +62,8 @@ export class ServerApiService {
         private http: HttpClient
     ) { }
 
-    public login(login: string, password: string): Observable<LoginResponse> {
-        return this.http.post(
+    public login(login: string, password: string): Observable<LoginResponse | ApiError> {
+        const result = this.http.post(
             url + 'Users/login',
             {
                 username: login,
@@ -66,21 +76,24 @@ export class ServerApiService {
                 }
             }
         ) as Observable<LoginResponse>;
+
+        return result.pipe(mapError<LoginResponse>());
     }
 
-    public getCalls(accessToken: string): Observable<CallData[]> {
-        return this.http.get(
-            url + 'Calls?access_token=' + accessToken, 
+    public getCalls(accessToken: string): Observable<CallData[] | ApiError> {
+        const result = this.http.get(
+            url + 'Calls?access_token=' + accessToken,
             {
                 headers: {
                     Accept: 'application/json'
                 }
             }
         ) as Observable<CallData[]>;
+        return result.pipe(mapError<CallData[]>());
     }
 
-    public getCall(id: string, accessToken: string): Observable<CallData> {
-        return this.http.get(
+    public getCall(id: string, accessToken: string): Observable<CallData | ApiError> {
+        const result = this.http.get(
             url + 'Calls/' + id + '?access_token=' + accessToken,
             {
                 headers: {
@@ -88,10 +101,12 @@ export class ServerApiService {
                 }
             }
         ) as Observable<CallData>;
+
+        return result.pipe(mapError<CallData>());
     }
 
-    public updateCall(call: Call, accessToken: string): Observable<CallData> {
-        return this.http.put(
+    public updateCall(call: Call, accessToken: string): Observable<CallData | ApiError> {
+        const result = this.http.put(
             url + 'Calls/' + call.data.id + '?access_token=' + accessToken,
             call.data,
             {
@@ -100,9 +115,10 @@ export class ServerApiService {
                 }
             }
         ) as Observable<CallData>;
+        return result.pipe(mapError<CallData>());
     }
 
-    public logout(accessToken: string): Observable<void> {
+    public logout(accessToken: string): Observable<undefined | ApiError> {
         return this.http.post(
             url + 'Users/logout?access_token=' + accessToken, 
             null

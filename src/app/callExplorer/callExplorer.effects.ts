@@ -1,10 +1,11 @@
 import { of, EMPTY, merge, throwError, Observable } from 'rxjs';
-import { filter, catchError, switchMap, map, concatMap, withLatestFrom, mapTo } from 'rxjs/operators';
+import { filter, catchError, switchMap, map, concatMap, withLatestFrom } from 'rxjs/operators';
 import { isType } from 'typescript-fsa';
 
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 
 import { ServerApiService, ApiError } from '../serverApi';
 import { selectAuthorization, AuthorizationStatus } from '../authorization';
@@ -32,12 +33,15 @@ export class CallExplorerEffects {
   explorerStatus$ = this.store.pipe(map(selectStatus));
   authorization$ = this.store.pipe(map(selectAuthorization));
 
+  unauthErrorMessage$ = this.translate.get('Unauthorized attempt to load');
+
   @Effect()
   update$ = this.updateStarted$.pipe(
     withLatestFrom(
       this.authorization$,
-    ),    
-    concatMap(([action, authorization]) => {
+      this.unauthErrorMessage$,
+    ),
+    concatMap(([action, authorization, unauthErrorMessage]) => {
       if (authorization.status === AuthorizationStatus.Authorized) {
         return this.api.updateCall(action.payload, authorization.id).pipe(
           map(
@@ -56,7 +60,7 @@ export class CallExplorerEffects {
         );
       } else {
         return throwError({
-          message: 'Unauthorized attempt to load'
+          message: unauthErrorMessage
         } as ApiError);
       }
     })
@@ -70,9 +74,10 @@ export class CallExplorerEffects {
     withLatestFrom(
       this.explorerStatus$,
       this.authorization$,
-      this.store
+      this.store,
+      this.unauthErrorMessage$,
     ),
-    switchMap(([action, explorerStatus, authorization, state]) => {
+    switchMap(([action, explorerStatus, authorization, state, unauthErrorMessage]) => {
       if (authorization.status === AuthorizationStatus.Authorized) {
         if (explorerStatus === LoadStatus.LoadedAll) {
           return emptyActions;
@@ -117,7 +122,7 @@ export class CallExplorerEffects {
         }
       } else {
         return throwError({
-          message: 'Unauthorized attempt to load'
+          message: unauthErrorMessage
         } as ApiError);
       }
     })
@@ -126,6 +131,7 @@ export class CallExplorerEffects {
   constructor(
     private actions$: Actions,
     private api: ServerApiService,
-    private store: Store<StateSegmentWithDeps>
+    private store: Store<StateSegmentWithDeps>,
+    private translate: TranslateService,
   ) {}
 }

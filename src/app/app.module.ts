@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -8,6 +8,8 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 import {
   MatButtonModule, MatCardModule, MatDialogModule, MatInputModule,
@@ -23,6 +25,12 @@ import { reducers, metaReducers } from './reducers';
 import { LoginComponent, AuthorizationEffects } from './authorization';
 import { CallExplorerComponent, CallCardComponent, CallExplorerEffects } from './callExplorer';
 import { getInitialState, LocalStorageEffects } from './localStorage';
+
+// AoT requires an exported function for factories
+export function httpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+}
+
 
 @NgModule({
   declarations: [
@@ -48,10 +56,16 @@ import { getInitialState, LocalStorageEffects } from './localStorage';
     MatIconModule,
     MatProgressSpinnerModule,
     AppRoutingModule,
-
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: httpLoaderFactory,
+          deps: [HttpClient],
+      },
+    }),
     StoreModule.forRoot(
-      reducers, 
-      { 
+      reducers,
+      {
         metaReducers,
         initialState: getInitialState()
       }

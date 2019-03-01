@@ -9,23 +9,23 @@
     </ng-container>
 
     <ng-container matColumnDef="​callStart​">
-        <th mat-header-cell *matHeaderCellDef> Start time </th>
-        <td mat-cell *matCellDef="let data"> {{data.callStart}} </td>
+        <th mat-header-cell *matHeaderCellDef translate>Start time</th>
+        <td mat-cell *matCellDef="let data">{{data.callStart}}</td>
     </ng-container>
 
     <ng-container matColumnDef="​callDuration">
-        <th mat-header-cell *matHeaderCellDef> Duration </th>
-        <td mat-cell *matCellDef="let data"> {{data.callDuration}} </td>
+        <th mat-header-cell *matHeaderCellDef translate>Duration</th>
+        <td mat-cell *matCellDef="let data">{{data.callDuration}}</td>
     </ng-container>
 
     <ng-container matColumnDef="agent">
-        <th mat-header-cell *matHeaderCellDef> Agent </th>
-        <td mat-cell *matCellDef="let data"> {{data.callWrapups[0].agent.login}} </td>
+        <th mat-header-cell *matHeaderCellDef translate>Agent</th>
+        <td mat-cell *matCellDef="let data">{{data.callWrapups[0].agent.login}}</td>
     </ng-container>
 
     <ng-container matColumnDef="wrapupName">
-        <th mat-header-cell *matHeaderCellDef> Wrapup Name </th>
-        <td mat-cell *matCellDef="let data"> {{data.callWrapups[0].wrapupName}} </td>
+        <th mat-header-cell *matHeaderCellDef translate>Wrapup name</th>
+        <td mat-cell *matCellDef="let data">{{data.callWrapups[0].wrapupName}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
@@ -33,7 +33,7 @@
 </table>
 
 <div class="load-error" *ngIf="(error$ | async) as error">
-    <div>Error:</div>
+    <div>{{'Error' | translate}}:</div>
     <mat-error>
         {{error}}
     </mat-error>
