@@ -6,11 +6,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { marbles } from 'rxjs-marbles/jasmine';
 
-import { ServerApiService, ApiError, LoginResponse, ApiErrorCode, Call, CallData } from '../serverApi';
-import { SaveState } from '../localStorage';
-import { Navigate, navigateToLogin } from '../routing';
+import { ServerApiService, ApiError, ApiErrorCode, Call, CallData } from '../serverApi';
+import { navigateToLogin } from '../routing';
 
-import { AuthorizationStatus, AuthorizationStateSegment } from '../authorization';
+import { AuthorizationStatus } from '../authorization';
 import { LoadAll, Update, LoadOne } from './callExplorer.actions';
 import { StateSegmentWithDeps, LoadStatus } from './callExplorer.reducer';
 import { CallExplorerEffects } from './callExplorer.effects';
@@ -201,7 +200,15 @@ describe('Call explorer Effects', () => {
     }));
 
     describe('LoadAll', () => {
-      it('successfull load scenario', marbles(m => {
+      const reloadableStatuses = [
+        LoadStatus.Nothing,
+        LoadStatus.Error,
+        LoadStatus.LoadedPartial,
+        LoadStatus.Loading
+      ];
+
+      it('LoadAll calls api.getCalls for all reloadable statuses, and returns LoadAll.done ' +
+         'for successfull api.getCalls result', marbles(m => {
         apiService = {
           getCalls: (accessToken) => {
             expect(accessToken).toBe(accessTokenId);
@@ -209,30 +216,99 @@ describe('Call explorer Effects', () => {
           }
         } as ServerApiService;
 
-        state = {
-          ...authorizedState,
-          callExplorer: {
-            status: LoadStatus.Nothing
+        reloadableStatuses.forEach(status => {
+          state = {
+            ...authorizedState,
+            callExplorer: {
+              status
+            }
+          } as StateSegmentWithDeps;
+
+          actions = m.cold('a--', {
+            a: LoadAll.started(),
+          });
+
+          const expected = m.cold('a--', {
+            a: LoadAll.done({
+              params: undefined,
+              result: [{
+                data: responseCallData,
+                isUpdating: false,
+              }]
+            }),
+          });
+
+          effects = TestBed.get(CallExplorerEffects);
+
+          m.expect(effects.load$).toBeObservable(expected);
+        });
+      }));
+
+      it('LoadAll calls api.getCalls for all reloadable statuses, and returns LoadAll.failed ' +
+         'for api.getCalls result as ApiErrorCode.Unknown', marbles(m => {
+        const apiError = new ApiError('error', ApiErrorCode.Unknown);
+        apiService = {
+          getCalls: (accessToken) => {
+            expect(accessToken).toBe(accessTokenId);
+            return of(apiError);
           }
-        } as StateSegmentWithDeps;
+        } as ServerApiService;
 
-        actions = m.cold('a--', {
-          a: LoadAll.started(),
+        reloadableStatuses.forEach(status => {
+          state = {
+            ...authorizedState,
+            callExplorer: {
+              status
+            }
+          } as StateSegmentWithDeps;
+
+          actions = m.cold('a--', {
+            a: LoadAll.started(),
+          });
+
+          const expected = m.cold('a--', {
+            a: LoadAll.failed({
+              params: undefined,
+              error: apiError
+            }),
+          });
+
+          effects = TestBed.get(CallExplorerEffects);
+
+          m.expect(effects.load$).toBeObservable(expected);
         });
+      }));
 
-        const expected = m.cold('a--', {
-          a: LoadAll.done({
-            params: undefined,
-            result: [{
-              data: responseCallData,
-              isUpdating: false,
-            }]
-          }),
+      it('LoadAll calls api.getCalls for all reloadable statuses, and returns LoadAll.failed ' +
+         'for api.getCalls result as ApiErrorCode.Unknown', marbles(m => {
+        const apiError = new ApiError('error', ApiErrorCode.Unauthorized);
+        apiService = {
+          getCalls: (accessToken) => {
+            expect(accessToken).toBe(accessTokenId);
+            return of(apiError);
+          }
+        } as ServerApiService;
+
+        reloadableStatuses.forEach(status => {
+          state = {
+            ...unauthorizedState,
+            callExplorer: {
+              status
+            }
+          } as StateSegmentWithDeps;
+
+          actions = m.cold('a--', {
+            a: LoadAll.started(),
+          });
+
+          const expected = m.cold('a--', {
+            a: navigateToLogin,
+          });
+
+          effects = TestBed.get(CallExplorerEffects);
+
+          m.expect(effects.load$).toBeObservable(expected);
         });
-
-        effects = TestBed.get(CallExplorerEffects);
-
-        m.expect(effects.load$).toBeObservable(expected);
       }));
 
       it('LoadAll does nothing if all calls are loaded', marbles(m => {
