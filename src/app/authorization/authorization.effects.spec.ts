@@ -60,7 +60,7 @@ describe('Authorization Effects', () => {
     } as LoginResponse;
 
     it('successfull login scenario', marbles(m => {
-      actions = m.hot('a--', {
+      actions = m.cold('a--', {
         a: Login.started(loginParams),
       });
 
@@ -88,7 +88,7 @@ describe('Authorization Effects', () => {
     it('failed login scenario', marbles(m => {
       const error = 'unknown error';
 
-      actions = m.hot('a--', {
+      actions = m.cold('a--', {
         a: Login.started(loginParams),
       });
 
@@ -117,7 +117,7 @@ describe('Authorization Effects', () => {
   describe('logout', () => {
 
     it('logout scenarios, successful/failed, from all states', marbles(m => {
-      actions = m.hot('a--', {
+      actions = m.cold('a--', {
         a: Logout.started(),
       });
 

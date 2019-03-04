@@ -44,8 +44,8 @@ describe('Call explorer Effects', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
-          authorization: () => state,
-          callExplorer: () => state,
+          authorization: () => state.authorization,
+          callExplorer: () => state.callExplorer,
         }),
       ],
       providers: [
@@ -73,7 +73,7 @@ describe('Call explorer Effects', () => {
       callStart: 'bebebe'
     } as CallData;
 
-    actions = m.hot('a--', {
+    actions = m.cold('a--', {
       a: Update.started(requestCall),
     });
 
@@ -186,7 +186,7 @@ describe('Call explorer Effects', () => {
       ];
 
       startActions.forEach(startAction => {
-        actions = m.hot('a--', {
+        actions = m.cold('a--', {
           a: startAction,
         });
 
@@ -200,12 +200,8 @@ describe('Call explorer Effects', () => {
       });
     }));
 
-    describe('LoadAll', marbles(m => {
-      actions = m.hot('a--|', {
-        a: LoadAll.started(),
-      });
-
-      it('successfull load scenario', () => {
+    describe('LoadAll', () => {
+      it('successfull load scenario', marbles(m => {
         apiService = {
           getCalls: (accessToken) => {
             expect(accessToken).toBe(accessTokenId);
@@ -213,7 +209,16 @@ describe('Call explorer Effects', () => {
           }
         } as ServerApiService;
 
-        state = authorizedState;
+        state = {
+          ...authorizedState,
+          callExplorer: {
+            status: LoadStatus.Nothing
+          }
+        } as StateSegmentWithDeps;
+
+        actions = m.cold('a--', {
+          a: LoadAll.started(),
+        });
 
         const expected = m.cold('a--', {
           a: LoadAll.done({
@@ -228,9 +233,9 @@ describe('Call explorer Effects', () => {
         effects = TestBed.get(CallExplorerEffects);
 
         m.expect(effects.load$).toBeObservable(expected);
-      });
+      }));
 
-      it('LoadAll does nothing if all calls are loaded', () => {
+      it('LoadAll does nothing if all calls are loaded', marbles(m => {
         apiService = {
         } as ServerApiService;
 
@@ -241,12 +246,16 @@ describe('Call explorer Effects', () => {
           }
         } as StateSegmentWithDeps;
 
-        const expected = m.cold('');
+        actions = m.cold('a--|', {
+          a: LoadAll.started(),
+        });
+
+        const expected = m.cold('---|');
 
         effects = TestBed.get(CallExplorerEffects);
 
         m.expect(effects.load$).toBeObservable(expected);
-      });
-    }));
+      }));
+    });
   });
 });
