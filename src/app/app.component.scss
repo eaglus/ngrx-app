@@ -1,6 +1,25 @@
+.title {
+    cursor: pointer;
+}
+
+.languages-select {
+    position: relative;
+    width: 150px;
+}
+
 .toolbar {
     position: relative;
     margin-bottom: 20px;
+}
+
+.toolbar-row {
+    display: flex;
+}
+
+.toolbar-row-right {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .content-wrapper {

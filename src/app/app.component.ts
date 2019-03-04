@@ -1,18 +1,11 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { createSelector } from '@ngrx/store';
-import { TranslateService } from '@ngx-translate/core';
+import { MatSelectChange } from '@angular/material';
 
-import {State} from './reducers';
-import { AuthorizationStatus, Logout } from './authorization';
-
-
-export const selectAuthorization = (state: State) => state.authorization;
-
-export const selectIsAuthorized = createSelector(
-  selectAuthorization,
-  authorization => authorization.status === AuthorizationStatus.Authorized
-);
+import { State } from './reducers';
+import { Logout, selectIsAuthorized } from './authorization';
+import { Navigate } from './routing';
+import { languagesAvaiable, selectLanguage, SetLanguage } from './localization';
 
 
 @Component({
@@ -22,14 +15,22 @@ export const selectIsAuthorized = createSelector(
 })
 export class AppComponent {
   title = 'ngrx-app';
+  languages = languagesAvaiable;
   isAuthorized$ = this.store.pipe(select(selectIsAuthorized));
+  language$ = this.store.pipe(select(selectLanguage));
 
-  constructor(private store: Store<State>, translate: TranslateService) {
-    translate.setDefaultLang('en');
-    translate.use('ru');
+  constructor(private store: Store<State>) {
   }
 
   doLogout() {
     this.store.dispatch(Logout.started());
+  }
+
+  onTitleClick() {
+    this.store.dispatch(Navigate(['']));
+  }
+
+  onLanguageChange($event: MatSelectChange) {
+    this.store.dispatch(SetLanguage($event.value));
   }
 }

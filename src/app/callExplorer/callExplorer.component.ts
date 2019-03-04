@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { map, filter } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 
+import { Call, CallData } from '../serverApi';
+import { Navigate } from '../routing';
 
 import { selectCalls, selectIsLoading, selectError } from './callExplorer.selectors';
 import { LoadAll } from './callExplorer.actions';
 import { StateSegmentWithDeps } from './callExplorer.reducer';
-import { Call, CallData } from '../serverApi';
 
 @Component({
   selector: 'app-call-explorer',
@@ -22,13 +22,12 @@ export class CallExplorerComponent {
 
   constructor(
     private store: Store<StateSegmentWithDeps>,
-    private router: Router,
   ) {
     store.dispatch(LoadAll.started());
   }
 
   onRowClick(data: CallData) {
-    this.router.navigate(['call', data.id]);
+    this.store.dispatch(Navigate(['call', data.id]));
   }
 
   getData(calls: Call[]) {

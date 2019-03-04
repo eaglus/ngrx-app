@@ -1,9 +1,23 @@
 <mat-toolbar color="primary" class="toolbar">
-    <mat-toolbar-row>
-      <span translate>My First App</span>
-      <button mat-button (click)="doLogout()" *ngIf="isAuthorized$ | async">
-        {{'Logout' | translate}}
-      </button>
+    <mat-toolbar-row class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span translate class="title" (click)="onTitleClick()">Calls explorer</span>
+      </div>
+      <div class="toolbar-row-right">
+        <mat-select 
+          class="languages-select" 
+          [value]="language$ | async"
+          (selectionChange)="onLanguageChange($event)"
+        >
+          <mat-option *ngFor="let language of languages" [value]="language.code">
+            {{language.name}}
+          </mat-option>
+        </mat-select>
+
+        <button mat-button (click)="doLogout()" *ngIf="isAuthorized$ | async">
+          {{'Logout' | translate}}
+        </button>
+      </div>
     </mat-toolbar-row>
 </mat-toolbar>
 

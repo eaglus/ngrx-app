@@ -48,8 +48,27 @@ export class ApiError {
     constructor(public message: string, public code: ApiErrorCode) {}
 }
 
-const mapError = <T>() => catchError<T, ApiError>((error: any) => {
-    const result = new ApiError(error.message, ApiErrorCode.Unknown);
+const unauthorizedCode = 401;
+
+interface ApiErrorResponse {
+    error: {
+        error: {
+            code: string;
+            message: string;
+            name: string;
+            statusCode: number;
+        }
+    }
+}
+
+const mapError = <T>() => catchError<T, ApiError>((response: ApiErrorResponse) => {
+    const { error: { error } } = response;
+    const result = new ApiError(
+        error.message, 
+        error.statusCode === unauthorizedCode
+          ? ApiErrorCode.Unauthorized
+          : ApiErrorCode.Unknown
+    );
     return [result];
 });
 

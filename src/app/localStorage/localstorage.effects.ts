@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { combineLatest } from 'rxjs';
 import { filter, tap, ignoreElements, switchMap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -12,6 +11,7 @@ export const storageKey = 'ngrx-app';
 function saveState(state: State) {
     const toSave: Partial<State> = {
         authorization: state.authorization,
+        localization: state.localization,
     };
 
     localStorage[storageKey] = JSON.stringify(toSave);

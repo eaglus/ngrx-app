@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { of, throwError } from 'rxjs';
-import { filter, map, mergeMap, mapTo, tap, switchMap, catchError, withLatestFrom } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { AnyAction } from 'typescript-fsa';
 
 import { ServerApiService, ApiError } from '../serverApi';
 import { SaveState } from '../localStorage';
+import { Navigate } from '../routing';
 
 import { Login, Logout } from './authorization.actions';
 import { selectAuthorization } from './authorization.selectors';
@@ -18,7 +17,6 @@ import { StateSegment, AuthorizationStatus } from './authorization.reducer';
 export class AuthorizationEffects {
 
   authorization$ = this.store.pipe(map(selectAuthorization));
-  unauthErrorMessage$ = this.translate.get('Unauthorized attempt to logout');
 
   @Effect()
   login$ = this.actions$
@@ -28,57 +26,52 @@ export class AuthorizationEffects {
           const params = action.payload;
           const {login, password} = params;
           return this.api.login(login, password).pipe(
-            map(response => Login.done({
-              params,
-              result: response
-            })),
-            catchError(error => of(Login.failed({
-              params,
-              error
-            })))
+            mergeMap(response => response instanceof ApiError
+              ? [
+                Login.failed({
+                  params,
+                  error: {
+                    message: response.message
+                  }
+                })
+              ] as AnyAction[]
+              : [
+                Login.done({
+                  params,
+                  result: response
+                }),
+                SaveState(),
+                Navigate([''])
+              ]
+            )
           );
       }),
     );
 
     @Effect()
-    loginRoute$ = this.actions$
-      .pipe(
-        filter(Login.done.match),
-        tap(() => {
-          this.router.navigateByUrl('/');
-        }),
-        mapTo(SaveState())
-      );
-
-    @Effect()
-    logoutRoute$ = this.actions$
+    logout$ = this.actions$
       .pipe(
         filter(Logout.started.match),
-        withLatestFrom(this.authorization$, this.unauthErrorMessage$),
-        mergeMap(([_, authorization, unauthErrorMessage]) => authorization.status === AuthorizationStatus.Authorized
-          ? this.api.logout(authorization.id).pipe(
-            catchError(() => undefined)
-          )
-          : throwError({ message: unauthErrorMessage } as ApiError)
+        withLatestFrom(this.authorization$),
+        mergeMap(([_, authorization]) => 
+          authorization.status === AuthorizationStatus.Authorized
+           ? this.api.logout(authorization.id)
+           : [undefined]
         ),
-        tap(() => {
-          this.router.navigateByUrl('/login');
-        }),
         mergeMap(() => [
           Logout.done({
             params: undefined,
             result: undefined
           }),
-          SaveState()
+          SaveState(),
+          Navigate(['login'])
         ])
       );
 
   constructor(
     private actions$: Actions,
     private api: ServerApiService,
-    private router: Router,
     private store: Store<StateSegment>,
-    private translate: TranslateService,
   ) {
   }
 }
