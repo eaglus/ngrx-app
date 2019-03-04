@@ -1,7 +1,7 @@
 import { Call, ApiError, ApiErrorCode } from '../serverApi';
-import { 
-  reducer, 
-  initialState, 
+import {
+  reducer,
+  initialState,
   LoadStatus,
 } from './callExplorer.reducer';
 import { LoadAll, LoadOne, Update } from './callExplorer.actions';
@@ -65,7 +65,7 @@ describe('Call explorer reducer', () => {
       }));
 
       expect(result).toEqual(expectedState);
-    });    
+    });
   });
 
   describe('LoadOne', () => {
@@ -110,35 +110,35 @@ describe('Call explorer reducer', () => {
         calls: [oldCall]
       };
 
-      it('LoadOne.done should append new call and set status', () => {  
+      it('LoadOne.done should append new call and set status', () => {
         const expectedState = {
           ...initialState,
           status: LoadStatus.LoadedPartial,
           calls: [oldCall, newCall]
         };
-  
+
         const result = reducer(startState, LoadOne.done({
           params: id,
           result: newCall
         }));
-  
+
         expect(result).toEqual(expectedState);
       });
 
-      it('LoadOne.done should update existed call and set status', () => {  
+      it('LoadOne.done should update existed call and set status', () => {
         const expectedState = {
           ...initialState,
           status: LoadStatus.LoadedPartial,
           calls: [oldCall]
         };
-  
+
         const result = reducer(startState, LoadOne.done({
           params: id,
           result: oldCall
         }));
-  
+
         expect(result).toEqual(expectedState);
-      });      
+      });
     });
 
     it('LoadOne.failed should set error status', () => {
@@ -154,7 +154,7 @@ describe('Call explorer reducer', () => {
       }));
 
       expect(result).toEqual(expectedState);
-    });    
+    });
   });
 
   describe('Update', () => {
@@ -229,6 +229,6 @@ describe('Call explorer reducer', () => {
       }));
 
       expect(result).toEqual(expectedState);
-    });    
+    });
   });
 });

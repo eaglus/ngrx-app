@@ -27,17 +27,17 @@ export class LocalizationEffects {
     map(savedLanguage => {
       const browserLanguage = this.translate.getBrowserLang();
 
-      const usedLang = 
+      const usedLang =
         savedLanguage ||
           (
             languagesAvaiable.some(item => item.code === browserLanguage)
             ? browserLanguage
             : defaultLanguageCode
           );
-  
+
       return SetLanguage(usedLang);
     })
-  )
+  );
 
   constructor(
     private actions$: Actions,

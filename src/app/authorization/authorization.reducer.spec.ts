@@ -1,7 +1,7 @@
-import { 
-  reducer, 
-  initialState, 
-  StateAuthorized, 
+import {
+  reducer,
+  initialState,
+  StateAuthorized,
   StateAuthorizing,
   StateError,
   AuthorizationStatus,
@@ -74,7 +74,7 @@ describe('Authorization Reducer', () => {
         error: errorMessage,
         login
       } as StateError);
-    });    
+    });
   });
 
   describe('Logout action', () => {
@@ -82,5 +82,5 @@ describe('Authorization Reducer', () => {
       const result = reducer(authorizedState, Logout.done);
       expect(result).toEqual(initialState);
     });
-  });  
+  });
 });

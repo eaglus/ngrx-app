@@ -122,7 +122,7 @@ export class CallExplorerEffects {
                         isUpdating: false
                       }
                     })],
-              ),              
+              ),
             );
           }
         }

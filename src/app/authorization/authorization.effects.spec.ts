@@ -74,9 +74,9 @@ describe('Authorization Effects', () => {
       });
 
       apiService = {
-        login: (login, _password) => of({
-          id: login,
-          userId: login
+        login: (loginArg, passwordArg) => of({
+          id: loginArg,
+          userId: loginArg
         } as LoginResponse)
       } as ServerApiService;
 
@@ -102,7 +102,7 @@ describe('Authorization Effects', () => {
       });
 
       apiService = {
-        login: (login, _password) => of(new ApiError(
+        login: (loginArg, passwordArg) => of(new ApiError(
           error,
           ApiErrorCode.Unknown
         ))

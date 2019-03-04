@@ -4,7 +4,7 @@ import { StoreModule } from '@ngrx/store';
 
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { marbles } from "rxjs-marbles/jasmine";
+import { marbles } from 'rxjs-marbles/jasmine';
 
 import { ServerApiService, ApiError, LoginResponse, ApiErrorCode, Call, CallData } from '../serverApi';
 import { SaveState } from '../localStorage';

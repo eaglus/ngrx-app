@@ -29,7 +29,7 @@ export interface CallWrapup {
 export interface CallData {
     id: string;
     callId: number;
-    ​callStart​: string;
+    ​callStart: string;
     ​callDuration: number;
     ​callWrapups: CallWrapup[];
 }
@@ -58,13 +58,13 @@ interface ApiErrorResponse {
             name: string;
             statusCode: number;
         }
-    }
+    };
 }
 
 const mapError = <T>() => catchError<T, ApiError>((response: ApiErrorResponse) => {
     const { error: { error } } = response;
     const result = new ApiError(
-        error.message, 
+        error.message,
         error.statusCode === unauthorizedCode
           ? ApiErrorCode.Unauthorized
           : ApiErrorCode.Unknown
@@ -139,7 +139,7 @@ export class ServerApiService {
 
     public logout(accessToken: string): Observable<undefined | ApiError> {
         return this.http.post(
-            url + 'Users/logout?access_token=' + accessToken, 
+            url + 'Users/logout?access_token=' + accessToken,
             null
         ).pipe(map(() => undefined));
     }

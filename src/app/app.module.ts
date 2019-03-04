@@ -76,8 +76,8 @@ export function httpLoaderFactory(http: HttpClient) {
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     EffectsModule.forRoot([
-      AuthorizationEffects, 
-      LocalStorageEffects, 
+      AuthorizationEffects,
+      LocalStorageEffects,
       CallExplorerEffects,
       RoutingEffects,
       LocalizationEffects,

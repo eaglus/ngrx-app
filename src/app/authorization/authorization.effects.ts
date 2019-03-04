@@ -53,7 +53,7 @@ export class AuthorizationEffects {
       .pipe(
         filter(Logout.started.match),
         withLatestFrom(this.authorization$),
-        mergeMap(([_, authorization]) => 
+        mergeMap(([_, authorization]) =>
           authorization.status === AuthorizationStatus.Authorized
            ? this.api.logout(authorization.id)
            : [undefined]
