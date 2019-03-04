@@ -168,7 +168,7 @@ describe('Call explorer Effects', () => {
       id
     } as CallData;
 
-    it('load in unauthorized state should redirect to login', marbles(m => {
+    it('load actions in unauthorized state should redirect to login', marbles(m => {
       state = {
         ...unauthorizedState,
         callExplorer: {
@@ -192,6 +192,35 @@ describe('Call explorer Effects', () => {
         const expected = m.cold('a--', {
           a: navigateToLogin,
         });
+
+        effects = TestBed.get(CallExplorerEffects);
+
+        m.expect(effects.load$).toBeObservable(expected);
+      });
+    }));
+
+    it('load actions does nothing if all calls are loaded', marbles(m => {
+      apiService = {
+      } as ServerApiService;
+
+      state = {
+        ...authorizedState,
+        callExplorer: {
+          status: LoadStatus.LoadedAll
+        }
+      } as StateSegmentWithDeps;
+
+      const loadActions = [
+        LoadAll.started(),
+        LoadOne.started(id)
+      ];
+
+      loadActions.forEach(loadAction => () => {
+        actions = m.cold('a--|', {
+          a: loadAction,
+        });
+
+        const expected = m.cold('---|');
 
         effects = TestBed.get(CallExplorerEffects);
 
@@ -279,8 +308,8 @@ describe('Call explorer Effects', () => {
         });
       }));
 
-      it('LoadAll calls api.getCalls for all reloadable statuses, and returns LoadAll.failed ' +
-         'for api.getCalls result as ApiErrorCode.Unknown', marbles(m => {
+      it('LoadAll calls api.getCalls for all reloadable statuses, and returns navigateToLogin ' +
+         'for api.getCalls result as ApiErrorCode.Unauthorized', marbles(m => {
         const apiError = new ApiError('error', ApiErrorCode.Unauthorized);
         apiService = {
           getCalls: (accessToken) => {
@@ -309,28 +338,6 @@ describe('Call explorer Effects', () => {
 
           m.expect(effects.load$).toBeObservable(expected);
         });
-      }));
-
-      it('LoadAll does nothing if all calls are loaded', marbles(m => {
-        apiService = {
-        } as ServerApiService;
-
-        state = {
-          ...authorizedState,
-          callExplorer: {
-            status: LoadStatus.LoadedAll
-          }
-        } as StateSegmentWithDeps;
-
-        actions = m.cold('a--|', {
-          a: LoadAll.started(),
-        });
-
-        const expected = m.cold('---|');
-
-        effects = TestBed.get(CallExplorerEffects);
-
-        m.expect(effects.load$).toBeObservable(expected);
       }));
     });
   });
