@@ -24,7 +24,7 @@ import { AppComponent } from './app.component';
 import { reducers, metaReducers } from './reducers';
 import { LoginComponent, AuthorizationEffects } from './authorization';
 import { CallExplorerComponent, CallCardComponent, CallExplorerEffects } from './callExplorer';
-import { getInitialState, LocalStorageEffects } from './localStorage';
+import { getInitialState, LocalStorageEffects, StateSaver } from './localStorage';
 import { RoutingEffects } from './routing';
 import { LocalizationEffects } from './localization';
 
@@ -83,7 +83,12 @@ export function httpLoaderFactory(http: HttpClient) {
       LocalizationEffects,
     ]),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: StateSaver,
+      useClass: StateSaver
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

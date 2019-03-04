@@ -11,7 +11,9 @@ export class RoutingEffects {
   @Effect()
   route$ = this.actions$.pipe(
     filter(Navigate.match),
-    tap(action => this.router.navigate(action.payload)),
+    tap(action => {
+      return this.router.navigate(action.payload);
+    }),
     ignoreElements()
   );
 

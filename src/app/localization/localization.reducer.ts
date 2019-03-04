@@ -7,7 +7,7 @@ export interface State {
   language: string;
 }
 
-const initialState = {
+export const initialState = {
   language: undefined
 };
 
