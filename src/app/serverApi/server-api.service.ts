@@ -6,8 +6,6 @@ import { map, catchError } from 'rxjs/operators';
 import {
     Call,
     CallData,
-    CallWrapupAgent,
-    CallWrapup,
     ApiErrorCode,
     ApiError,
     UNAUTHORIZED_CODE,
@@ -21,7 +19,7 @@ import {
 const url = 'https://diabolocom-exercise.herokuapp.com/api/';
 
 
-const mapError = <T>() => catchError<T, ApiError>((response: ApiErrorResponse) => {
+const mapError = <T>() => catchError<T, [ApiError]>((response: ApiErrorResponse) => {
     const { error: { error } } = response;
     const result = new ApiError(
         error.message,
