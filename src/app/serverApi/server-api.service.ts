@@ -3,69 +3,29 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-// Swagger​: ​https://diabolocom-exercise.herokuapp.com/explorer/
-// Login account:​ username: test / password: test4321
+import {
+    Call,
+    CallData,
+    CallWrapupAgent,
+    CallWrapup,
+    ApiErrorCode,
+    ApiError,
+    UNAUTHORIZED_CODE,
+    LoginResponse,
+    ApiErrorResponse
+} from './interfaces';
+
+// Swagger: https://diabolocom-exercise.herokuapp.com/explorer/
+// Login account: username: test / password: test4321
 
 const url = 'https://diabolocom-exercise.herokuapp.com/api/';
 
-export interface LoginResponse {
-    id: string;
-    ttl: number;
-    created: string;
-    userId: string;
-}
-
-export interface CallWrapupAgent {
-    id: number;
-    login: string;
-}
-
-export interface CallWrapup {
-    agent: CallWrapupAgent;
-    wrapupName: string;
-    wrapupComment: string;
-}
-
-export interface CallData {
-    id: string;
-    callId: number;
-    ​callStart: string;
-    ​callDuration: number;
-    ​callWrapups: CallWrapup[];
-}
-
-export interface Call {
-    data: CallData;
-    isUpdating: boolean;
-}
-
-export enum ApiErrorCode {
-    Unauthorized,
-    Unknown
-}
-
-export class ApiError {
-    constructor(public message: string, public code: ApiErrorCode) {}
-}
-
-const unauthorizedCode = 401;
-
-interface ApiErrorResponse {
-    error: {
-        error: {
-            code: string;
-            message: string;
-            name: string;
-            statusCode: number;
-        }
-    };
-}
 
 const mapError = <T>() => catchError<T, ApiError>((response: ApiErrorResponse) => {
     const { error: { error } } = response;
     const result = new ApiError(
         error.message,
-        error.statusCode === unauthorizedCode
+        error.statusCode === UNAUTHORIZED_CODE
           ? ApiErrorCode.Unauthorized
           : ApiErrorCode.Unknown
     );

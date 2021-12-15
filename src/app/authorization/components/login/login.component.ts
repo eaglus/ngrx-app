@@ -1,20 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { createSelector } from '@ngrx/store';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { State } from '../../../reducers';
-import { AuthorizationStatus } from '../../authorization.reducer';
 import { Login } from '../../authorization.actions';
-
-
-export const selectAuthorization = (state: State) => state.authorization;
-
-export const selectIsAuthorized = createSelector(
-  selectAuthorization,
-  authorization => authorization.status === AuthorizationStatus.Authorized
-);
-
 
 @Component({
   selector: 'app-login',

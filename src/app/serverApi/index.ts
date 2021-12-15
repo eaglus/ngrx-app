@@ -1,10 +1,7 @@
-export {
-  ServerApiService,
-  CallWrapup,
-  Call,
-  CallData,
-  CallWrapupAgent,
-  LoginResponse,
-  ApiError,
-  ApiErrorCode,
-} from './server-api.service';
+// export {
+//   ServerApiService
+// } from './server-api.service';
+
+export * from './interfaces';
+
+export { ServerApiService } from './server-api.service.stub';
